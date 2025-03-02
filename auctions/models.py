@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models
 
@@ -7,12 +8,19 @@ class User(AbstractUser):
     pass
 
 CATEGORY_CHOICES = [
-    ('electronics', 'Electronics'),
-    ('fashion', 'Fashion'),
-    ('home', 'Home'),
-    ('sports', 'Sports'),
-    ('toys', 'Toys'),
+    ('Electronics', 'Electronics'),
+    ('Fashion', 'Fashion'),
+    ('Home', 'Home'),
+    ('Sports', 'Sports'),
+    ('Toys', 'Toys'),
+    ('Music', 'Music'),
 ]
+
+def validateURL(url): # TODO THIS MIGHT NOT WORK
+    if url.endswith(".jpg") or url.endswith(".png"):
+        return True
+    raise ValidationError("URL must be an image")
+
 
 class Auction(models.Model):
     # name
@@ -20,11 +28,9 @@ class Auction(models.Model):
     # description
     description = models.TextField(max_length=250)
     # price
-    starting_bid = models.IntegerField(validators=[MinValueValidator(0)])
-    # current highest bid
-    highest_bid = models.IntegerField(default=0)
+    highest_bid = models.IntegerField(validators=[MinValueValidator(1)])
     # photo
-    image = models.URLField(blank=True)
+    image = models.URLField(blank=True, validators=[validateURL])
     # when created
     created_on = models.DateTimeField(auto_now_add=True)
     # category
@@ -45,8 +51,8 @@ class Bid(models.Model):
 
 class Comment(models.Model):
     # actual comment
-    comment = models.CharField(max_length=250)
+    comment = models.TextField(max_length=250)
     # who commented
-    comment_author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="commenter")
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="commenter")
     # on what auction is the comment
     comment_on = models.ForeignKey(Auction, on_delete=models.CASCADE, related_name="commentOnAuction")

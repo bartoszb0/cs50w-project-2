@@ -1,13 +1,11 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Active Listings</h2>
+    <h2>Listings made by {{ username }}</h2>
 
     {% for auction in auctions %}
         <div>
             <a href="{% url 'listing' auction.id %}">{{ auction.name }}</a>
-            ID: {{ auction.id }}(DEBUG)
-            {{ auction.listed_by }}
             {{ auction.created_on }}
             price: ${{ auction.highest_bid }} <!-- TODO take care of formatting the price -->
             {% if auction.image %}
