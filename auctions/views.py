@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
@@ -10,9 +11,10 @@ from .forms import AuctionForm, BidForm, CommentForm
 
 
 def index(request):
-    all_auctions = Auction.objects.all()
+    all_auctions = Auction.objects.filter(is_open=True)
     return render(request, "auctions/index.html", {
-        "auctions": all_auctions
+        "auctions": all_auctions,
+        "heading": "Active Listings"
     })
 
 
@@ -99,12 +101,8 @@ def listing_view(request, id):
         form = BidForm(request.POST)
         if form.is_valid():
             if form.cleaned_data["bid"] <= auction.highest_bid:
-                return render(request, "auctions/listing.html", {
-                    "message": "Bid must be bigger than current price",
-                    "auction": auction,
-                    "form": BidForm(),
-                    "highest_bid": Bid.objects.filter(bid_on=auction).order_by("-bid").first()
-                })
+                messages.error(request, "Bid must be bigger than the current price")
+                return HttpResponseRedirect(reverse("listing", args=[id]))
             else:
                 auction.highest_bid = form.cleaned_data["bid"]
                 auction.save()
@@ -115,21 +113,22 @@ def listing_view(request, id):
                     bid_on=auction
                 )
                 new_bid.save()
-                # TODO flash "Succesfully placed a bet"
+
+                
+                messages.success(request, "Succesfully placed a bet")
                 return HttpResponseRedirect(reverse("listing", args=[id]))
         else:
-            return render(request, "auctions/listing.html", {
-                "auction": auction,
-                "form": BidForm(),
-                "highest_bid": Bid.objects.filter(bid_on=auction).order_by("-bid").first()
-            })
+            messages.error(request, "Invalid bid input")
+            return HttpResponseRedirect(reverse("listing", args=[id]))
     else:
         return render(request, "auctions/listing.html", {
             "auction": auction,
             "form": BidForm(),
             "highest_bid": Bid.objects.filter(bid_on=auction).order_by("-bid").first(),
-            "comments": Comment.objects.filter(comment_on=auction).order_by("-id"), # TODO zrobic to w kazdym wariancie
-            "comment_form": CommentForm()
+            "comments": Comment.objects.filter(comment_on=auction).order_by("-id"),
+            "comment_form": CommentForm(),
+            "on_watchlist": Auction.objects.filter(id=auction.id, watchlist=User.objects.filter(username=request.user.username).first()),
+            "is_creator": Auction.objects.filter(id=auction.id, listed_by=User.objects.filter(username=request.user.username).first()),
         })
 
 def user_listings(request, username):
@@ -149,12 +148,13 @@ def categories_page(request):
     })
 
 def category_page(request, category):
-    auctions = Auction.objects.filter(category=category)
+    auctions = Auction.objects.filter(category=category, is_open=True)
     return render(request, "auctions/index.html", {
-        "auctions": auctions
+        "auctions": auctions,
+        "heading": "Active Listings"
     })
 
-def action_comment(request, id): # TODO handle user putting /listings/13/comment
+def action_comment(request, id):
     if request.method == "POST":
         form = CommentForm(request.POST)
         if form.is_valid():
@@ -162,4 +162,47 @@ def action_comment(request, id): # TODO handle user putting /listings/13/comment
             user = User.objects.get(username=request.user.username)
             comment = form.cleaned_data["comment"]
             Comment(comment=comment, author=user, comment_on=auction).save()
+            messages.success(request, "Succesfully commented")
             return HttpResponseRedirect(reverse("listing", args=[id]))
+        else:
+            messages.error(request, "Invalid comment")
+            return HttpResponseRedirect(reverse("listing", args=[id]))
+    else:
+        return HttpResponseRedirect(reverse("listing", args=[id]))
+        
+@login_required
+def watchlist_view(request):
+    auctions = Auction.objects.filter(watchlist=User.objects.get(username=request.user.username))
+    return render(request, "auctions/index.html", {
+        "auctions": auctions,
+        "heading": "Watchlist",
+    })
+
+
+@login_required
+def handle_watchlist(request, id):
+    if request.method == "POST":
+        auction = Auction.objects.get(id=id)
+        user = User.objects.get(username=request.user.username)
+        if Auction.objects.filter(id=id, watchlist=user).exists():
+            auction.watchlist.remove(user)
+            auction.save()
+            messages.info(request, "Auction removed from Watchlist")
+            return HttpResponseRedirect(reverse("listing", args=[id]))
+        else:
+            auction.watchlist.add(user)
+            auction.save()
+            messages.success(request, "Auction added to Watchlist")
+            return HttpResponseRedirect(reverse("listing", args=[id]))
+    else:
+        return HttpResponseRedirect(reverse("listing", args=[id]))
+
+
+@login_required
+def close_listing(request, id):
+    if request.method == "POST":
+        close_auction = Auction.objects.get(id=id)
+        close_auction.is_open = False
+        close_auction.save()
+        messages.info(request, "Auction closed")
+    return HttpResponseRedirect(reverse("listing", args=[id]))

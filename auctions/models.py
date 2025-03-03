@@ -39,6 +39,11 @@ class Auction(models.Model):
     listed_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="author")
     # is the auction open or closed
     is_open = models.BooleanField(default=True)
+    # each auction can have multiple users, each user can watch multiple auctions
+    watchlist = models.ManyToManyField(User, blank=True, related_name="watchers")
+
+    def __str__(self):
+        return f"'{self.name}', created by {self.listed_by}"
 
 class Bid(models.Model):
     # bid amount
@@ -48,6 +53,9 @@ class Bid(models.Model):
     # on what auction is the bid
     bid_on = models.ForeignKey(Auction, on_delete=models.CASCADE, related_name="bidOnAuction")
 
+    def __str__(self):
+        return f"${self.bid} placed on '{self.bid_on.name}'"
+
 
 class Comment(models.Model):
     # actual comment
@@ -56,3 +64,6 @@ class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="commenter")
     # on what auction is the comment
     comment_on = models.ForeignKey(Auction, on_delete=models.CASCADE, related_name="commentOnAuction")
+
+    def __str__(self):
+        return f"Comment ID{self.id}, placed on '{self.comment_on.name}' by {self.author.username}"

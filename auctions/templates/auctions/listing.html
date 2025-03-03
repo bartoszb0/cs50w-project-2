@@ -3,35 +3,67 @@
 {% block body %}
     <h2>Listing: {{ auction.name }}</h2>
 
-    {% if message %}
+    {% if messages %}
         <div>
-            {{ message }}
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
         </div>
+    {% endif %}
+
+    {% if user.is_authenticated %}
+        <form action="{% url 'handle_watchlist' auction.id %}" method="post">
+            {% csrf_token %}
+            
+            {% if not on_watchlist %}
+                <input class="btn btn-primary" type="submit" value="+ Watchlist">
+                
+            {% else %}
+                <input class="btn btn-primary" type="submit" value="- Watchlist">
+
+            {% endif %}
+        </form>
     {% endif %}
 
     <div>
         {% if auction.image %}
             <img src="{{ auction.image }}" alt="Missing Image for {{ auction.name }}">
         {% endif %}
+
         <p></p>
         {{ auction.description }}
         <p></p>
-        <strong>Price: ${{ auction.highest_bid }}</strong><!-- TODO take care of formatting the price -->
-        {% if highest_bid %}
-            Current highest bidder: <a href="{% url 'user_listings' highest_bid.bid_author.username %}">{{ highest_bid.bid_author }}</a>
+        <strong>Price: ${{ auction.highest_bid }}</strong>
+    </div>
+
+    <div>
+        {% if auction.is_open %}
+
+            {% if highest_bid %}
+                Current highest bidder: <a href="{% url 'user_listings' highest_bid.bid_author.username %}">{{ highest_bid.bid_author }}</a>
+            {% endif %}
+
+            {% if user.is_authenticated %}
+                <form action="{% url 'listing' auction.id %}" method="post">
+                    {% csrf_token %}
+                    {{ form }}
+                    <input class="btn btn-primary" type="submit" value="Place Bid">
+                </form>    
+                {% else %}
+                <p><strong><a href="{% url 'login' %}">Log in</a> to bid</p></strong><p></p>
+                {% endif %}
+
+        {% else %}
+
+            <p>AUCTION CLOSED</p>
+
+            {% if highest_bid.bid_author == request.user %}
+                <a href="{% url 'user_listings' highest_bid.bid_author.username %}">{{ highest_bid.bid_author }}</a> won the auction!
+            {% endif %}
+
         {% endif %}
     </div>
-    <div>
-        {% if user.is_authenticated %}
-            <form action="{% url 'listing' auction.id %}" method="post">
-                {% csrf_token %}
-                {{ form }}
-                <input class="btn btn-primary" type="submit" value="Place Bid">
-            </form>    
-            {% else %}
-                <strong>Sign in to place a bid.</strong>
-            {% endif %}
-    </div>
+
     <div>
         <h3>Details</h3>
         <ul>
@@ -50,7 +82,7 @@
                 <input class="btn btn-primary" type="submit" value="Comment">
             </form>
         {% else %}
-            <h3>Log in to comment</h3>
+            <strong><a href="{% url 'login' %}">Log in</a> to comment</p></strong><p>
         {% endif %}
         {% for comment in comments %}
             <div>
@@ -62,5 +94,12 @@
             <h3>No comments at the moment</h3>
         {% endfor %}
     </div>
+
+    {% if is_creator and auction.is_open %}
+        <form action="{% url 'close' auction.id %}" method="post">
+            {% csrf_token %}
+            <input class="btn btn-primary" type="submit" value="Close auction">
+        </form>
+    {% endif %}
 
 {% endblock %}
