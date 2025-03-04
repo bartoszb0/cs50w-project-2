@@ -84,7 +84,8 @@ def create_listing(request):
                 listed_by=creator
             )
             new_auction.save()
-            return HttpResponseRedirect(reverse("index"))
+            messages.success(request, "Listing created")
+            return HttpResponseRedirect(reverse("listing", args=[new_auction.id]))
         else:
             return render(request, "auctions/create.html", {
                 "form": form
@@ -115,7 +116,7 @@ def listing_view(request, id):
                 new_bid.save()
 
                 
-                messages.success(request, "Succesfully placed a bet")
+                messages.success(request, "Succesfully placed a bid")
                 return HttpResponseRedirect(reverse("listing", args=[id]))
         else:
             messages.error(request, "Invalid bid input")
@@ -163,12 +164,9 @@ def action_comment(request, id):
             comment = form.cleaned_data["comment"]
             Comment(comment=comment, author=user, comment_on=auction).save()
             messages.success(request, "Succesfully commented")
-            return HttpResponseRedirect(reverse("listing", args=[id]))
         else:
             messages.error(request, "Invalid comment")
-            return HttpResponseRedirect(reverse("listing", args=[id]))
-    else:
-        return HttpResponseRedirect(reverse("listing", args=[id]))
+    return HttpResponseRedirect(reverse("listing", args=[id]))
         
 @login_required
 def watchlist_view(request):
@@ -188,14 +186,11 @@ def handle_watchlist(request, id):
             auction.watchlist.remove(user)
             auction.save()
             messages.info(request, "Auction removed from Watchlist")
-            return HttpResponseRedirect(reverse("listing", args=[id]))
         else:
             auction.watchlist.add(user)
             auction.save()
             messages.success(request, "Auction added to Watchlist")
-            return HttpResponseRedirect(reverse("listing", args=[id]))
-    else:
-        return HttpResponseRedirect(reverse("listing", args=[id]))
+    return HttpResponseRedirect(reverse("listing", args=[id]))
 
 
 @login_required
