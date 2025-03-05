@@ -1,21 +1,29 @@
 {% extends "auctions/layout.html" %}
+{% load static %}
 
 {% block body %}
-    <h2>{{ heading }}</h2>
+    <h2 id="auctionsHeading">{{ heading }}</h2>
 
-    {% for auction in auctions %}
-        <div>
-            <a href="{% url 'listing' auction.id %}">{{ auction.name }}</a>
-            {{ auction.listed_by }}
-            {{ auction.created_on }}
-
-            price: ${{ auction.highest_bid }} <!-- TODO take care of formatting the price -->
-            
-            {% if auction.image %}
-                <img src="{{ auction.image }}" alt="Missing Image for {{ auction.name }}">
-            {% endif %}
-        </div>
-    {% empty %}
-        <h2>No auctions at the moment</h2>
-    {% endfor %}
+    <div id="displayBox">
+        {% for auction in auctions %}
+            <div class="displayAuction">
+                <a href="{% url 'listing' auction.id %}">
+                {% if auction.image %}
+                    <img src="{{ auction.image }}" alt="{{ auction.name }}">
+                {% else %}
+                    <img src="{% static 'auctions/missing.jpg' %}" alt="No image available">
+                {% endif %}
+                <p></p>
+                <span id="auctionName">{{ auction.name }}</span></a>
+                <p></p>
+                <span><strong>Price:</strong> ${{ auction.highest_bid }}</span> <!-- TODO take care of formatting the price -->
+                <p></p>
+                <span class="auctionOther">Listed by: {{ auction.listed_by }}</span>
+                <p></p>
+                <span class="auctionOther">{{ auction.created_on }}</span>
+            </div>
+        {% empty %}
+            <h2>No auctions at the moment</h2>
+        {% endfor %}
+    </div>
 {% endblock %}

@@ -1,3 +1,75 @@
 body {
     padding: 10px;
 }
+
+/* TOP NAVIGATION BAR */
+
+#topBar {
+    text-align: center;
+}
+
+.nav {
+    display: flex;
+    justify-content: center;
+}
+
+.nav-link {
+    color: rgb(73, 73, 73);
+}
+
+
+
+/* BUTTONS */
+
+#watchlistAddButton {
+    background-color: grey;
+    border-color: grey;
+}
+
+#watchlistAddButton:hover {
+    background-color: rgb(66, 148, 34);
+    border-color: rgb(66, 148, 34);
+}
+
+
+#closeButton {
+    background-color: rgb(194, 102, 102);
+    border-color: rgb(194, 102, 102);
+}
+
+#closeButton:hover {
+    background-color: rgb(214, 38, 38);
+    border-color: rgb(214, 38, 38);
+}
+
+/* LIST AUCTIONS */
+#auctionsHeading {
+    text-align: center;
+}
+
+#displayBox {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+}
+
+.displayAuction {
+    text-align: center;
+    margin: 20px;
+    line-height: 10px;
+}
+
+.displayAuction img {
+    height: 200px;
+    width: 200px;
+    object-fit: scale-down;
+}
+
+#auctionName {
+    font-weight: bold;
+    color: black;
+}
+
+.auctionOther {
+    color: gray;
+    font-size: 12px;
+}

@@ -16,7 +16,7 @@
             {% csrf_token %}
             
             {% if not on_watchlist %}
-                <input class="btn btn-primary" type="submit" value="+ Watchlist">
+                <input id="watchlistAddButton"class="btn btn-primary" type="submit" value="+ Watchlist">
                 
             {% else %}
                 <input class="btn btn-primary" type="submit" value="- Watchlist">
@@ -98,7 +98,7 @@
     {% if is_creator and auction.is_open %}
         <form action="{% url 'close' auction.id %}" method="post">
             {% csrf_token %}
-            <input class="btn btn-primary" type="submit" value="Close auction">
+            <input id="closeButton" class="btn btn-primary" type="submit" value="Close auction">
         </form>
     {% endif %}
 
