@@ -81,7 +81,8 @@ def create_listing(request):
                 highest_bid=form.cleaned_data["highest_bid"],
                 image=form.cleaned_data["image"],
                 category=form.cleaned_data["category"],
-                listed_by=creator
+                listed_by=creator,
+                starting_price=form.cleaned_data["highest_bid"],
             )
             new_auction.save()
             messages.success(request, "Listing created")
@@ -105,17 +106,13 @@ def listing_view(request, id):
                 messages.error(request, "Bid must be bigger than the current price")
                 return HttpResponseRedirect(reverse("listing", args=[id]))
             else:
-                auction.highest_bid = form.cleaned_data["bid"]
-                auction.save()
-
                 new_bid = Bid(
-                    bid=auction.highest_bid,
-                    bid_author=User.objects.get(username=request.user.username),
-                    bid_on=auction
+                    bid = form.cleaned_data["bid"],
+                    bid_author = User.objects.get(username=request.user.username),
+                    bid_on = auction
                 )
                 new_bid.save()
 
-                
                 messages.success(request, "Succesfully placed a bid")
                 return HttpResponseRedirect(reverse("listing", args=[id]))
         else:

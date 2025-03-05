@@ -41,9 +41,15 @@ class Auction(models.Model):
     is_open = models.BooleanField(default=True)
     # each auction can have multiple users, each user can watch multiple auctions
     watchlist = models.ManyToManyField(User, blank=True, related_name="watchers")
+    # remember starting price
+    starting_price = models.IntegerField(default=1)
 
     def __str__(self):
         return f"'{self.name}', created by {self.listed_by}"
+    
+    def save(self):
+        super().save()
+        Bid(bid=self.highest_bid, bid_on=self).save()
 
 class Bid(models.Model):
     # bid amount
@@ -55,7 +61,24 @@ class Bid(models.Model):
 
     def __str__(self):
         return f"${self.bid} placed on '{self.bid_on.name}'"
+    
+    # When calling .save(), it checks whether passed bid is higher than the current highest bid for certain auction, if it is,
+    # new bid overwrites the highest bid on certain auction
+    def save(self):
+        if self.bid > self.bid_on.highest_bid:
+            self.bid_on.highest_bid = self.bid
+            self.bid_on.save()
+            super().save()
 
+    def delete(self):
+        super().delete()
+        if Bid.objects.filter(bid_on=self.bid_on).exists():
+            self.bid_on.highest_bid = Bid.objects.filter(bid_on=self.bid_on).order_by("-bid").first().bid
+        else:
+            self.bid_on.highest_bid = self.bid_on.starting_price
+        self.bid_on.save()
+
+    # TODO ogarnac co sie dzieje jak kasuje bida w Django Admin Inteface
 
 class Comment(models.Model):
     # actual comment

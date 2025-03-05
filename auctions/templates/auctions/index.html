@@ -8,7 +8,9 @@
             <a href="{% url 'listing' auction.id %}">{{ auction.name }}</a>
             {{ auction.listed_by }}
             {{ auction.created_on }}
+
             price: ${{ auction.highest_bid }} <!-- TODO take care of formatting the price -->
+            
             {% if auction.image %}
                 <img src="{{ auction.image }}" alt="Missing Image for {{ auction.name }}">
             {% endif %}

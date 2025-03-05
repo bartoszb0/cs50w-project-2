@@ -5,7 +5,22 @@
 
     <form action="{% url 'create' %}" method="post">
         {% csrf_token %}
-        {{ form }}
+        {{ form.name.errors}}
+        {{ form.name }}
+        <p></p>
+        {{ form.description.errors}}
+        {{ form.description }}
+        <p></p>
+        {{ form.highest_bid.errors }}
+        {{ form.highest_bid }}
+        <p></p>
+        {{ form.image.errors }}
+        {{ form.image}}
+        <p></p>
+        {{ form.category.errors }}
+        Category:
+        {{ form.category }}
+        <p></p>
         <input class="btn btn-primary" type="submit" value="Create">
     </form>
 {% endblock %}
