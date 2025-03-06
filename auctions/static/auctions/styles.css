@@ -1,75 +1,293 @@
 body {
     padding: 10px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 /* TOP NAVIGATION BAR */
 
-#topBar {
-    text-align: center;
-}
+    #B {
+        height: 60px;
+        width: 120px;
+    }
 
-.nav {
-    display: flex;
-    justify-content: center;
-}
+    #topBar {
+        text-align: center;
+    }
 
-.nav-link {
-    color: rgb(73, 73, 73);
-}
+    .nav {
+        display: flex;
+        justify-content: center;
+    }
 
+    .nav-link {
+        color: rgb(73, 73, 73);
+    }
 
+    #logout:hover {
+        color: rgb(167, 0, 0);
+    }
 
-/* BUTTONS */
-
-#watchlistAddButton {
-    background-color: grey;
-    border-color: grey;
-}
-
-#watchlistAddButton:hover {
-    background-color: rgb(66, 148, 34);
-    border-color: rgb(66, 148, 34);
-}
-
-
-#closeButton {
-    background-color: rgb(194, 102, 102);
-    border-color: rgb(194, 102, 102);
-}
-
-#closeButton:hover {
-    background-color: rgb(214, 38, 38);
-    border-color: rgb(214, 38, 38);
-}
 
 /* LIST AUCTIONS */
-#auctionsHeading {
-    text-align: center;
-}
 
-#displayBox {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-}
+    .auctionsHeading {
+        text-align: center;
+    }
 
-.displayAuction {
-    text-align: center;
-    margin: 20px;
-    line-height: 10px;
-}
+    #displayBox {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+    }
 
-.displayAuction img {
-    height: 200px;
-    width: 200px;
-    object-fit: scale-down;
-}
+    .displayAuction {
+        text-align: center;
+        margin: 20px;
+        line-height: 10px;
+    }
 
-#auctionName {
-    font-weight: bold;
-    color: black;
-}
+    .displayAuction img {
+        height: 200px;
+        width: 200px;
+        object-fit: scale-down;
+    }
 
-.auctionOther {
-    color: gray;
-    font-size: 12px;
-}
+    #auctionName {
+        font-weight: bold;
+        color: black;
+    }
+
+    .auctionOther {
+        color: gray;
+        font-size: 12px;
+    }
+
+
+/* CATEGORIES */
+
+    #browseCategories {
+        list-style-type: none;
+        text-align: center;
+        font-size: x-large;
+    }
+
+    .itemCategories {
+        color: black;
+    }
+
+
+/* LOGIN and REGISTER */
+
+    .LetIn {
+        display: flex;
+        justify-content: center;
+    }
+
+    .LetIn form, input {
+        width: 400px;
+    }
+
+    .question {
+        display: flex;
+        justify-content: center;
+    }
+
+
+/* VIEW AUCTION */
+
+    #headingWatchlist {
+        display: flex;
+        justify-content: center;
+    }
+
+    /* Watchlist buttons */
+
+        #headingWatchlist input {
+            width: 150px;
+            margin-left: 25px;
+        }
+
+        #watchlistAddButton {
+            background-color: rgb(69, 139, 41);
+            border-color: rgb(69, 139, 41);
+        }
+
+        #watchlistAddButton:hover {
+            background-color: rgb(78, 175, 39);
+            border-color: rgb(78, 175, 39);
+        }
+
+        #watchlistRemoveButton {
+            background-color: rgb(104, 104, 63);
+            border-color: rgb(104, 104, 63);
+        }
+
+        #watchlistRemoveButton:hover {
+            background-color: rgb(133, 133, 81);
+            border-color: rgb(133, 133, 81);
+    }
+
+    /* Image and Description */
+
+        #imageDiv {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        #imageDiv img {
+            height: 300px;
+            width: 300px;
+            object-fit: scale-down;
+        }
+
+        #imageDiv p {
+            height: 300px;
+            width: 300px;
+            text-align: left;
+            overflow-wrap: break-word;
+            padding: 5px;
+            background-color: rgb(233, 233, 233);
+        }
+
+    /* Price and bid */
+
+        #bidDetailDiv {
+            display: flex;
+            justify-content: center;
+        }
+
+        #bidDiv, #detailDiv {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        /* Bid */
+
+            #bidDiv {
+                text-align: center;
+            }
+
+            #price {
+                font-size: 28px;
+            }
+
+            #id_bid {
+                width: 170px;
+            }
+
+            #bidButton {
+                width: 100px;
+                background-color: rgb(89, 89, 175);
+                border-color: rgb(89, 89, 175);
+            }
+
+            #bidButton:hover {
+                background-color: rgb(107, 107, 209);
+                border-color: rgb(107, 107, 209);
+            }
+
+        /* Details */
+
+            #detailDiv {
+                text-align: right;
+                font-size: 14px;
+            }
+
+            #detailDiv ul {
+                list-style-type: none;
+            }
+
+    /* Comments */
+
+        #commentsDiv {
+            margin-top: 50px;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        #placeComment {
+            display: flex;
+            justify-content: center;
+        }
+
+        #placeComment input {
+            height: 60px;
+            width: 100px;
+            margin-bottom: 50px;
+        }
+
+        #id_comment {
+            height: 60px;
+        }
+
+        #allComments {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+        } 
+
+        #allComments #show {
+            text-align: left;
+            margin-left: 35%;
+            overflow-wrap: break-word;
+            width: 550px;
+        }
+        
+        #allComments #empty {
+            text-align: center;
+        }
+
+    /* Close auction button */
+        #close {
+            margin-top: 80px;
+            display: flex;
+            justify-content: center;
+        }
+
+        #closeButton {
+            background-color: rgb(194, 102, 102);
+            border-color: rgb(194, 102, 102);
+        }
+
+        #closeButton:hover {
+            background-color: rgb(214, 38, 38);
+            border-color: rgb(214, 38, 38);
+        }
+
+
+/* CREATE NEW LISTING */
+
+    #createForm {
+        display: flex;
+        justify-content: center;
+    }
+
+    #createForm input, textarea, select {
+        width: 400px;
+    }
+
+    #createForm select {
+        width: 315px;
+    }
+
+    #createForm .btn.btn-primary {
+        background-color: rgb(54, 116, 30);
+        border-color: rgb(54, 116, 30);
+    }
+
+    #createForm .btn.btn-primary:hover {
+        background-color: rgb(73, 155, 41);
+        border-color: rgb(73, 155, 41);
+    }
+
+    .errorlist {
+        display: flex;
+        justify-content: center;
+        width: auto;
+        font-size: small;
+        background-color: rgb(235, 87, 51);
+        color: rgb(255, 255, 255);
+        margin-bottom: 10px;
+    }

@@ -1,105 +1,119 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Listing: {{ auction.name }}</h2>
+    <div id="headingWatchlist">
+        <h2 class="auctionsHeading">Listing: {{ auction.name }}</h2>
+        {% if user.is_authenticated %}
+            <form action="{% url 'handle_watchlist' auction.id %}" method="post">
+                {% csrf_token %}
+                
+                {% if not on_watchlist %}
+                    <input id="watchlistAddButton"class="btn btn-primary" type="submit" value="+ Watchlist">
+                    
+                {% else %}
+                    <input id="watchlistRemoveButton" class="btn btn-primary" type="submit" value="- Watchlist">
+
+                {% endif %}
+            </form>
+        {% endif %}
+    </div>
 
     {% if messages %}
-        <div>
+        <div class="errorlist">
             {% for message in messages %}
                 {{ message }}
             {% endfor %}
         </div>
     {% endif %}
 
-    {% if user.is_authenticated %}
-        <form action="{% url 'handle_watchlist' auction.id %}" method="post">
-            {% csrf_token %}
-            
-            {% if not on_watchlist %}
-                <input id="watchlistAddButton"class="btn btn-primary" type="submit" value="+ Watchlist">
-                
-            {% else %}
-                <input class="btn btn-primary" type="submit" value="- Watchlist">
-
-            {% endif %}
-        </form>
-    {% endif %}
-
-    <div>
+    <div id="imageDiv">
         {% if auction.image %}
             <img src="{{ auction.image }}" alt="Missing Image for {{ auction.name }}">
         {% endif %}
-
-        <p></p>
-        {{ auction.description }}
-        <p></p>
-        <strong>Price: ${{ auction.highest_bid }}</strong>
+        <p>{{ auction.description }}</p>
     </div>
 
-    <div>
-        {% if auction.is_open %}
+    <div id="bidDetailDiv">
 
-            {% if highest_bid %}
-                Current highest bidder: <a href="{% url 'user_listings' highest_bid.bid_author.username %}">{{ highest_bid.bid_author }}</a>
-            {% endif %}
+        <div id="bidDiv">
+            <strong id="price">Price: ${{ auction.highest_bid }}</strong>
 
-            {% if user.is_authenticated %}
-                <form action="{% url 'listing' auction.id %}" method="post">
-                    {% csrf_token %}
-                    {{ form.bid }}
-                    <input class="btn btn-primary" type="submit" value="Place Bid">
-                </form>    
-                {% else %}
-                <p><strong><a href="{% url 'login' %}">Log in</a> to bid</p></strong><p></p>
+            {% if auction.is_open %}
+
+                {% if highest_bid %}
+                    <span>Current highest bidder: <a href="{% url 'user_listings' highest_bid.bid_author.username %}">{{ highest_bid.bid_author }}</a></span>
                 {% endif %}
 
-        {% else %}
+                {% if user.is_authenticated %}
+                    <form action="{% url 'listing' auction.id %}" method="post">
+                        {% csrf_token %}
+                        {{ form.bid }}
+                        <input id="bidButton"class="btn btn-primary" type="submit" value="Place Bid">
+                    </form>    
+                    {% else %}
+                    <p><strong><a href="{% url 'login' %}">Log in</a> to bid</p></strong><p></p>
+                    {% endif %}
 
-            <p>AUCTION CLOSED</p>
+            {% else %}
 
-            {% if highest_bid.bid_author == request.user %}
-                <a href="{% url 'user_listings' highest_bid.bid_author.username %}">{{ highest_bid.bid_author }}</a> won the auction!
+                <p>AUCTION CLOSED</p>
+
+                {% if highest_bid.bid_author == request.user %}
+                    <a href="{% url 'user_listings' highest_bid.bid_author.username %}">{{ highest_bid.bid_author }}</a> won the auction!
+                {% endif %}
+
             {% endif %}
+        </div>
 
-        {% endif %}
+        <div id="detailDiv">
+            <h3>Details</h3>
+            <ul>
+                <li>Listed by: <a href="{% url 'user_listings' auction.listed_by.username %}">{{ auction.listed_by }}</a></li>
+                <li>Category: {{ auction.category }}</li>
+                <li>Created on: {{ auction.created_on }}</li>
+            </ul>
+        </div>
+
     </div>
 
-    <div>
-        <h3>Details</h3>
-        <ul>
-            <li>Listed by: <a href="{% url 'user_listings' auction.listed_by.username %}">{{ auction.listed_by }}</a></li>
-            <li>Category: {{ auction.category }}</li>
-            <li>Created on: {{ auction.created_on }}</li>
-        </ul>
-    </div>
+    <div id="commentsDiv">
+        <h2 class="auctionsHeading">Comments</h2>
 
-    <div>
-        <h2>Comments</h2>
-        {% if user.is_authenticated %}
+        <div id="placeComment">
+            {% if user.is_authenticated %}
             <form action="{% url 'comment' auction.id %}" method="post">
                 {% csrf_token %}
                 {{ comment_form.comment }}
                 <input class="btn btn-primary" type="submit" value="Comment">
             </form>
-        {% else %}
-            <strong><a href="{% url 'login' %}">Log in</a> to comment</p></strong><p>
-        {% endif %}
-        {% for comment in comments %}
-            <div>
+            {% else %}
+                <strong><a href="{% url 'login' %}">Log in</a> to comment</p></strong><p>
+            {% endif %}
+        </div>
+        
+        <div id="allComments">
+            {% for comment in comments %}
+            <div id="show">
                 <strong>{{ comment.author.username }}</strong>
                 {{ comment.comment }}
             </div>
             <p></p>
-        {% empty %}
-            <h3>No comments at the moment</h3>
-        {% endfor %}
+            {% empty %}
+            <div id="empty">
+                <h3>No comments at the moment</h3>
+            </div>
+            {% endfor %}
+
+        </div>
     </div>
 
     {% if is_creator and auction.is_open %}
+    <div id="close">
         <form action="{% url 'close' auction.id %}" method="post">
             {% csrf_token %}
             <input id="closeButton" class="btn btn-primary" type="submit" value="Close auction">
         </form>
+    </div>
     {% endif %}
 
 {% endblock %}

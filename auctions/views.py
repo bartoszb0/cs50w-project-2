@@ -11,7 +11,7 @@ from .forms import AuctionForm, BidForm, CommentForm
 
 
 def index(request):
-    all_auctions = Auction.objects.filter(is_open=True)
+    all_auctions = Auction.objects.filter(is_open=True).order_by("-created_on")
     return render(request, "auctions/index.html", {
         "auctions": all_auctions,
         "heading": "Active Listings"
@@ -131,7 +131,7 @@ def listing_view(request, id):
 
 def user_listings(request, username):
     user = User.objects.get(username=username)
-    auctions = Auction.objects.filter(listed_by=user)
+    auctions = Auction.objects.filter(listed_by=user).order_by("-created_on")
     return render(request, "auctions/user.html", {
         "auctions": auctions,
         "username": username
@@ -146,7 +146,7 @@ def categories_page(request):
     })
 
 def category_page(request, category):
-    auctions = Auction.objects.filter(category=category, is_open=True)
+    auctions = Auction.objects.filter(category=category, is_open=True).order_by("-created_on")
     return render(request, "auctions/index.html", {
         "auctions": auctions,
         "heading": "Active Listings"

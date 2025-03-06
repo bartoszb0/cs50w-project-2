@@ -17,7 +17,7 @@ class AuctionForm(ModelForm):
             "name": forms.TextInput(attrs={"placeholder": "Enter name"}),
             "description": forms.Textarea(attrs={"placeholder": "Enter description"}),
             "highest_bid": forms.NumberInput(attrs={"placeholder": "Enter starting price"}),
-            "image": forms.URLInput(attrs={"placeholder": "Enter URL here"}),
+            "image": forms.URLInput(attrs={"placeholder": "Enter image's URL here"}),
         }
 
 class BidForm(ModelForm):

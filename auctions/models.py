@@ -28,7 +28,7 @@ class Auction(models.Model):
     # description
     description = models.TextField(max_length=250)
     # price
-    highest_bid = models.IntegerField(validators=[MinValueValidator(1)])
+    highest_bid = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.009)])
     # photo
     image = models.URLField(blank=True, validators=[validateURL])
     # when created
@@ -42,7 +42,7 @@ class Auction(models.Model):
     # each auction can have multiple users, each user can watch multiple auctions
     watchlist = models.ManyToManyField(User, blank=True, related_name="watchers")
     # remember starting price
-    starting_price = models.IntegerField(default=1)
+    starting_price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.01)], default=0.01)
 
     def __str__(self):
         return f"'{self.name}', created by {self.listed_by}"
@@ -53,7 +53,7 @@ class Auction(models.Model):
 
 class Bid(models.Model):
     # bid amount
-    bid = models.IntegerField()
+    bid = models.DecimalField(max_digits=10, decimal_places=2)
     # who bid
     bid_author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bidder")
     # on what auction is the bid

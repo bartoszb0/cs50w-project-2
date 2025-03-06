@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block body %}
-    <h2 id="auctionsHeading">{{ heading }}</h2>
+    <h2 class="auctionsHeading">{{ heading }}</h2>
 
     <div id="displayBox">
         {% for auction in auctions %}
@@ -23,7 +23,7 @@
                 <span class="auctionOther">{{ auction.created_on }}</span>
             </div>
         {% empty %}
-            <h2>No auctions at the moment</h2>
-        {% endfor %}
     </div>
+            <h2 class="auctionsHeading">No auctions at the moment</h2>
+        {% endfor %}
 {% endblock %}
