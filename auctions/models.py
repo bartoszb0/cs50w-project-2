@@ -16,7 +16,7 @@ CATEGORY_CHOICES = [
     ('Music', 'Music'),
 ]
 
-def validateURL(url): # TODO THIS MIGHT NOT WORK
+def validateURL(url):
     if url.endswith(".jpg") or url.endswith(".png"):
         return True
     raise ValidationError("URL must be an image")
