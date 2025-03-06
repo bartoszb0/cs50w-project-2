@@ -42,7 +42,7 @@ class Auction(models.Model):
     # each auction can have multiple users, each user can watch multiple auctions
     watchlist = models.ManyToManyField(User, blank=True, related_name="watchers")
     # remember starting price
-    starting_price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.01)], default=0.01)
+    starting_price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.009)], default=0.01)
 
     def __str__(self):
         return f"'{self.name}', created by {self.listed_by}"
@@ -77,8 +77,6 @@ class Bid(models.Model):
         else:
             self.bid_on.highest_bid = self.bid_on.starting_price
         self.bid_on.save()
-
-    # TODO ogarnac co sie dzieje jak kasuje bida w Django Admin Inteface
 
 class Comment(models.Model):
     # actual comment
